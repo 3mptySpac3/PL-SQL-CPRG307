@@ -1,0 +1,182 @@
+SQL> spool
+currently spooling to C:\Users\thefa\OneDrive\Desktop\Database Prog\Database Spools\Lab1V1.txt
+SQL> set LINESIZE 175;
+SQL> set pagesize 30;
+SQL> desc mm_member;
+ Name                                                                                               Null?    Type
+ -------------------------------------------------------------------------------------------------- -------- ------------------------------------------------------------------
+ MEMBER_ID                                                                                          NOT NULL NUMBER(4)
+ LAST                                                                                                        VARCHAR2(12)
+ FIRST                                                                                                       VARCHAR2(8)
+ LICENSE_NO                                                                                                  VARCHAR2(9)
+ LICENSE_ST                                                                                                  VARCHAR2(2)
+ CREDIT_CARD                                                                                                 VARCHAR2(12)
+ SUSPENSION                                                                                                  VARCHAR2(1)
+ MAILING_LIST                                                                                                VARCHAR2(1)
+
+SQL> insert into mm_member(member_id,last,first)
+  2     values(192,'Nde','JP');
+
+1 row created.
+
+SQL> update mm_member
+  2     set credit_card = '192090394523'
+  3     where member_id = 192;
+
+1 row updated.
+
+SQL> select * from mm_member;
+
+ MEMBER_ID LAST         FIRST    LICENSE_N LI CREDIT_CARD  S M                                                                                                                 
+---------- ------------ -------- --------- -- ------------ - -                                                                                                                 
+        10 Tangier      Tim      111111111 VA 123456789111 N                                                                                                                   
+        11 Ruth         Babe     222222222 VA 222222222222 N Y                                                                                                                 
+        12 Maulder      Fox      333333333 FL 333333333333 N Y                                                                                                                 
+        13 Wild         Coyote   444444444 VA 444444444444 N                                                                                                                   
+        14 Casteel      Joan     555555555 VA 555555555555 N Y                                                                                                                 
+       192 Nde          JP                    192090394523 N                                                                                                                   
+
+6 rows selected.
+
+SQL> delete from mm_member
+  2     where member_id = 192;
+
+1 row deleted.
+
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> select m.movie_title, r.rental_id, mm.last
+  2     from mm_movie m
+  3     join mm_rental r on m.movie_id = r.movie_id
+  4     join mm_member mm on r.member_id = mm.member_id
+  5     order by r.rental_id;
+
+MOVIE_TITLE                               RENTAL_ID LAST                                                                                                                       
+---------------------------------------- ---------- ------------                                                                                                               
+Deep Blue Sea                                     1 Tangier                                                                                                                    
+Duck Soup                                         2 Tangier                                                                                                                    
+The good, the bad and the ugly                    3 Maulder                                                                                                                    
+Star Wars                                         4 Wild                                                                                                                       
+Jaws                                              5 Wild                                                                                                                       
+Deep Blue Sea                                     6 Wild                                                                                                                       
+Waking Ned Devine                                 7 Casteel                                                                                                                    
+Silverado                                         8 Casteel                                                                                                                    
+Texas Chainsaw Masacre                            9 Maulder                                                                                                                    
+The Fifth Element                                10 Maulder                                                                                                                    
+Star Wars                                        11 Maulder                                                                                                                    
+Texas Chainsaw Masacre                           12 Wild                                                                                                                       
+
+12 rows selected.
+
+SQL> 
+SQL> 
+SQL> create table my_table(
+  2     my_number number,
+  3     my_date date,
+  4     my_string varchar2(5)
+  5  );
+
+Table created.
+
+SQL> 
+SQL> create sequence seq_movie_id
+  2     start with 20
+  3     increment by 2;
+
+Sequence created.
+
+SQL> 
+SQL> select sequence_name, last_number, increment_by
+  2     from user_sequences
+  3     where sequence_name = 'SEQ_MOVIE_ID';
+
+SEQUENCE_NAME                                                                                                                    LAST_NUMBER INCREMENT_BY                      
+-------------------------------------------------------------------------------------------------------------------------------- ----------- ------------                      
+SEQ_MOVIE_ID                                                                                                                              20            2                      
+
+SQL> 
+SQL> 
+SQL> select seq_movie_id.nextval from dual;
+
+   NEXTVAL                                                                                                                                                                     
+----------                                                                                                                                                                     
+        20                                                                                                                                                                     
+
+SQL> 
+SQL> 
+SQL> alter sequence seq_movie_id
+  2     increment by 5;
+
+Sequence altered.
+
+SQL> 
+SQL> insert into mm_movie ( movie_id, movie_title, movie_cat_id, movie_value, movie_qty)
+  2     values (seq_movie_id.nextval, 'Home Alone', 5, 23.24, 1);
+
+1 row created.
+
+SQL> 
+SQL> 
+SQL> create view vw_movie_rental as
+  2     select m.movie_title, r.rental_id, mem.last
+  3        from mm_movie m
+  4        join mm_rental r on m.movie_id = r.movie_id
+  5        join mm_member mem on r.member_id = mem.member_id
+  6        order by r.rental_id;
+
+View created.
+
+SQL> 
+SQL> select * from vw_movie_rental;
+
+MOVIE_TITLE                               RENTAL_ID LAST                                                                                                                       
+---------------------------------------- ---------- ------------                                                                                                               
+Deep Blue Sea                                     1 Tangier                                                                                                                    
+Duck Soup                                         2 Tangier                                                                                                                    
+The good, the bad and the ugly                    3 Maulder                                                                                                                    
+Star Wars                                         4 Wild                                                                                                                       
+Jaws                                              5 Wild                                                                                                                       
+Deep Blue Sea                                     6 Wild                                                                                                                       
+Waking Ned Devine                                 7 Casteel                                                                                                                    
+Silverado                                         8 Casteel                                                                                                                    
+Texas Chainsaw Masacre                            9 Maulder                                                                                                                    
+The Fifth Element                                10 Maulder                                                                                                                    
+Star Wars                                        11 Maulder                                                                                                                    
+Texas Chainsaw Masacre                           12 Wild                                                                                                                       
+
+12 rows selected.
+
+SQL> 
+SQL> update mm_member
+  2     set last = 'Tangier 1'
+  3     where member_id in (
+  4        select member_id
+  5           from mm_rental
+  6           where movie_id = 2
+  7     );
+
+0 rows updated.
+
+SQL> 
+SQL> select * from vw_movie_rental;
+
+MOVIE_TITLE                               RENTAL_ID LAST                                                                                                                       
+---------------------------------------- ---------- ------------                                                                                                               
+Deep Blue Sea                                     1 Tangier                                                                                                                    
+Duck Soup                                         2 Tangier                                                                                                                    
+The good, the bad and the ugly                    3 Maulder                                                                                                                    
+Star Wars                                         4 Wild                                                                                                                       
+Jaws                                              5 Wild                                                                                                                       
+Deep Blue Sea                                     6 Wild                                                                                                                       
+Waking Ned Devine                                 7 Casteel                                                                                                                    
+Silverado                                         8 Casteel                                                                                                                    
+Texas Chainsaw Masacre                            9 Maulder                                                                                                                    
+The Fifth Element                                10 Maulder                                                                                                                    
+Star Wars                                        11 Maulder                                                                                                                    
+Texas Chainsaw Masacre                           12 Wild                                                                                                                       
+
+12 rows selected.
+
+SQL> spool off;
