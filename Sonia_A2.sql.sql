@@ -138,7 +138,7 @@ BEGIN
         DBMS_OUTPUT.PUT_LINE('------------------------------------------------');
         DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
         DBMS_OUTPUT.PUT_LINE('------------------------------------------------');
-        ROLLBACK; -- Undo changes since last commit
+        ROLLBACK; 
 END;
 /
 
