@@ -149,3 +149,5 @@ COLUMN transaction_no FORMAT 9999;
 SELECT * FROM transaction_detail;
 SELECT * FROM transaction_history;
 SELECT account_no, account_name, account_balance FROM account;
+
+--Done
